@@ -317,10 +317,20 @@ setTimeout(type,speed);
 
 type();
 
+/* نزول الشاشة تلقائيا */
+
+setTimeout(function(){
+
+window.scrollTo({
+top: document.body.scrollHeight,
+behavior: "smooth"
+});
+
+},4000);
+
 }
 
 </script>
 
 </body>
 </html>
-
