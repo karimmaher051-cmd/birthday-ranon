@@ -73,7 +73,6 @@ margin-top:30px;
 position:absolute;
 font-size:45px;
 animation:float 7s linear infinite;
-pointer-events:none;
 }
 
 @keyframes float{
@@ -82,14 +81,13 @@ pointer-events:none;
 }
 
 /* الصفحة الأخيرة */
-  
+
 #mainPage{
 display:none;
 background:#ff6b6b;
-min-height:100vh;
+height:100vh;
 padding-top:60px;
-color:white;
-overflow:auto;
+color:rgb(0, 0, 0);
 }
 
 #mainPage h2{
@@ -308,10 +306,19 @@ box.innerHTML+="<br>";
 box.innerHTML+=text.charAt(i);
 }
 
+i++;
+
+setTimeout(type,speed);
+
+}
+
+}
+
+type();
+
+}
+
 </script>
 
 </body>
 </html>
-
-
-
