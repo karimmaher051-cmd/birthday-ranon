@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="ar">
-
 <head>
 
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>Birthday Surprise</title>
+
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
 <style>
 
@@ -14,13 +16,13 @@ margin:0;
 font-family:Arial;
 text-align:center;
 overflow:hidden;
-background:black;
-color:white;
 }
 
-/* الصفحة الأولى */
+/* صفحة العد */
 
-#page1{
+#countdownPage{
+background:black;
+color:white;
 height:100vh;
 display:flex;
 flex-direction:column;
@@ -28,276 +30,295 @@ justify-content:center;
 align-items:center;
 }
 
-#countdown{
-font-size:90px;
+#countdownPage h2{
+font-size:42px;
 }
 
-/* الشمعة */
+#countdown{
+font-size:150px;
+font-weight:bold;
+}
+
+/* صفحة الشمعة */
+
+#candlePage{
+background:black;
+color:white;
+height:100vh;
+display:none;
+flex-direction:column;
+justify-content:center;
+align-items:center;
+}
 
 .candle{
-font-size:120px;
-display:none;
-position:relative;
-animation:flicker 0.6s infinite alternate;
+font-size:180px;
+filter:drop-shadow(0 0 120px orange);
+animation:glow 1.5s infinite alternate;
 }
 
-/* إضاءة الشمعة */
-
-.candle::after{
-content:'';
-position:absolute;
-top:50%;
-left:50%;
-width:900px;
-height:900px;
-transform:translate(-50%,-50%);
-background:radial-gradient(circle,
-rgba(255,220,120,0.9) 0%,
-rgba(255,200,80,0.6) 25%,
-rgba(255,150,50,0.3) 45%,
-transparent 70%);
-filter:blur(120px);
-z-index:-1;
+@keyframes glow{
+from{filter:drop-shadow(0 0 40px orange)}
+to{filter:drop-shadow(0 0 200px orange)}
 }
 
-@keyframes flicker{
-from{transform:scale(1);}
-to{transform:scale(1.08);}
-}
-
-.text{
-font-size:40px;
-margin-top:20px;
-display:none;
+#text{
+font-size:44px;
+margin-top:30px;
 }
 
 /* البالونات */
 
 .balloon{
 position:absolute;
-font-size:40px;
-animation:float 6s linear infinite;
+font-size:45px;
+animation:float 7s linear infinite;
 }
 
 @keyframes float{
-from{transform:translateY(100vh);}
-to{transform:translateY(-100vh);}
+0%{transform:translateY(110vh)}
+100%{transform:translateY(-120vh)}
 }
 
-/* الكونفيتي */
+/* الصفحة الأخيرة */
 
-.confetti{
-position:absolute;
-font-size:25px;
-animation:fall 5s linear infinite;
-}
-
-@keyframes fall{
-from{transform:translateY(-100px);}
-to{transform:translateY(100vh);}
-}
-
-/* الصفحة الثانية */
-
-#page2{
+#mainPage{
 display:none;
+background:#ff6b6b;
 height:100vh;
-background:linear-gradient(45deg,#dd3639,#ff696e);
-flex-direction:column;
-justify-content:center;
-align-items:center;
+padding-top:60px;
+color:rgb(0, 0, 0);
 }
 
-.photo{
-width:320px;
-height:420px;
+#mainPage h2{
+font-size:40px;
+margin-bottom:20px;
+}
+
+img{
+width:90%;
+max-width:450px;
 border-radius:25px;
-overflow:hidden;
+box-shadow:0 10px 40px rgba(0,0,0,0.5);
 cursor:pointer;
-box-shadow:0 15px 40px rgba(0,0,0,0.3);
-transition:0.4s;
 }
 
-.photo img{
-width:100%;
-height:100%;
-object-fit:cover;
-}
+/* الرسالة */
 
-.photo:hover{
-transform:scale(1.05);
-}
-
-.message{
+#message{
+font-size:34px;
+line-height:1.8;
 margin-top:30px;
-font-size:32px;
-opacity:0;
-transform:translateY(20px);
-transition:0.6s;
-line-height:1.6;
+padding:20px;
 }
 
-.show{
+/* القلوب */
+
+.heart{
+position:absolute;
+font-size:45px;
+animation:heartFloat 6s linear forwards;
+}
+
+@keyframes heartFloat{
+0%{
+transform:translateY(110vh);
 opacity:1;
-transform:translateY(0);
+}
+100%{
+transform:translateY(-120vh);
+opacity:0;
+}
 }
 
 </style>
-
 </head>
 
 <body>
 
-<audio id="music">
+<!-- صفحة العد -->
 
-<source src="music.mp3" type="audio/mpeg">
+<div id="countdownPage">
 
-</audio>
-
-<!-- الصفحة الأولى -->
-
-<div id="page1">
+<h2>المفاجأة هتظهر بعد</h2>
 
 <div id="countdown">10</div>
 
-<div class="candle" id="candle">🕯️</div>
+</div>
 
-<div class="text" id="text">
+<!-- صفحة الشمعة -->
 
-الكتكوته اللي كبرت سنة 🐣🎉💥 
+<div id="candlePage">
+
+<div class="candle">🕯️</div>
+
+<div id="text">الكتكوته اللي كبرت سنة 🐣🎉💥</div>
 
 </div>
 
-</div>
+<!-- الصفحة الأخيرة -->
 
-<!-- الصفحة الثانية -->
+<div id="mainPage">
 
-<div id="page2">
+<h2>اضغطي علي رنون ❤️</h2>
 
-<h1>اضغطي على رنون ❤️</h1>
+<img src="child.jpg" onclick="showMessage()">
 
-<div class="photo" onclick="showMessage()">
+<div id="message"></div>
 
-<img src="child.jpg">
-
-</div>
-
-<div id="message" class="message"></div>
+<audio id="music" src="music.mp3"></audio>
 
 </div>
 
 <script>
 
-var time=10;
+/* العد التنازلي */
 
-var countdown=setInterval(function(){
+let time=10;
+
+let countdown=document.getElementById("countdown");
+
+let timer=setInterval(()=>{
 
 time--;
 
-document.getElementById("countdown").innerHTML=time;
+countdown.innerHTML=time;
 
-if(time==0){
+if(time<=0){
 
-clearInterval(countdown);
+clearInterval(timer);
 
-document.getElementById("countdown").style.display="none";
+document.getElementById("countdownPage").style.display="none";
 
-document.getElementById("candle").style.display="block";
-
-document.getElementById("text").style.display="block";
-
-/* البالونات */
-
-for(let i=0;i<25;i++){
-
-let balloon=document.createElement("div");
-
-balloon.className="balloon";
-
-balloon.innerHTML="🎈";
-
-balloon.style.left=Math.random()*100+"vw";
-
-balloon.style.animationDuration=(Math.random()*3+3)+"s";
-
-document.body.appendChild(balloon);
-
-}
+document.getElementById("candlePage").style.display="flex";
 
 /* الكونفيتي */
 
-for(let i=0;i<40;i++){
+confetti({
+particleCount:200,
+spread:100,
+origin:{y:0.6}
+});
 
-let conf=document.createElement("div");
+/* اهتزاز خفيف */
 
-conf.className="confetti";
-
-conf.innerHTML="🎉";
-
-conf.style.left=Math.random()*100+"vw";
-
-conf.style.animationDuration=(Math.random()*3+2)+"s";
-
-document.body.appendChild(conf);
-
+if(navigator.vibrate){
+navigator.vibrate([200,100,200]);
 }
 
-/* الانتقال للصفحة الثانية */
+/* تشغيل البالونات */
 
-setTimeout(function(){
-
-document.getElementById("page1").style.display="none";
-
-document.getElementById("page2").style.display="flex";
-
-},8000);
+createBalloons();
 
 }
 
 },1000);
 
+
+/* البالونات */
+
+function createBalloons(){
+
+for(let i=0;i<20;i++){
+
+let b=document.createElement("div");
+
+b.className="balloon";
+
+b.innerHTML="🎈";
+
+b.style.left=Math.random()*100+"%";
+
+b.style.animationDuration=(5+Math.random()*3)+"s";
+
+document.body.appendChild(b);
+
+}
+
+}
+
+
+/* الانتقال للصفحة الثانية */
+
+setTimeout(()=>{
+
+document.getElementById("candlePage").style.display="none";
+
+document.getElementById("mainPage").style.display="block";
+
+document.body.style.background="#ff6b6b";
+
+},18000);
+
+
+/* القلوب */
+
+function createHearts(){
+
+for(let i=0;i<20;i++){
+
+let heart=document.createElement("div");
+
+heart.className="heart";
+
+heart.innerHTML="❤️";
+
+heart.style.left=Math.random()*100+"%";
+
+document.body.appendChild(heart);
+
+setTimeout(()=>{heart.remove()},6000);
+
+}
+
+}
+
+
+/* الرسالة */
+
 function showMessage(){
+
+createHearts();
 
 document.getElementById("music").play().catch(()=>{});
 
-let text = "كل سنه وانتي طيبه يا اجمل واحن حد في حياتي ❤️\nكل سنه وانتي اعظم ما رأت عيني 🥰\nبحبك اووي ❤️\nHappy birthday ranon 🐣🥰🥰🥰🫶🏻😘🎊🎉";
+let text=`كل سنه وانتي طيبه يا اجمل واحن حد في حياتي ❤️
 
-let i = 0;
+كل سنه وانتي اعظم ما رأت عيناي 🥰
 
-let speed = 60;
+بحبك اووي ❤️
 
-let messageBox = document.getElementById("message");
+Happy birthday ranon 🐣🥰🥰🥰🫶🏻😘🎊🎉`;
 
-messageBox.classList.add("show");
+let i=0;
 
-function typeWriter(){
+let speed=60;
 
-if(i < text.length){
+let box=document.getElementById("message");
 
-if(text.charAt(i) == "\n"){
+function type(){
 
-messageBox.innerHTML += "<br>";
+if(i<text.length){
 
+if(text.charAt(i)=="\n"){
+box.innerHTML+="<br>";
 }else{
-
-messageBox.innerHTML += text.charAt(i);
-
+box.innerHTML+=text.charAt(i);
 }
 
 i++;
 
-setTimeout(typeWriter, speed);
+setTimeout(type,speed);
 
 }
 
 }
 
-typeWriter();
+type();
 
 }
 
 </script>
 
 </body>
-
 </html>
