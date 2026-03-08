@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="ar">
+
+<head>
+
+<meta charset="UTF-8">
+
+<title>Birthday Surprise</title>
+
+<style>
+
+body{
+margin:0;
+font-family:Arial;
+text-align:center;
+overflow:hidden;
+background:black;
+color:white;
+}
+
+/* الصفحة الأولى */
+
+#page1{
+height:100vh;
+display:flex;
+flex-direction:column;
+justify-content:center;
+align-items:center;
+}
+
+#countdown{
+font-size:90px;
+}
+
+/* الشمعة */
+
+.candle{
+font-size:120px;
+display:none;
+position:relative;
+animation:flicker 0.6s infinite alternate;
+}
+
+/* إضاءة الشمعة */
+
+.candle::after{
+content:'';
+position:absolute;
+top:50%;
+left:50%;
+width:900px;
+height:900px;
+transform:translate(-50%,-50%);
+background:radial-gradient(circle,
+rgba(255,220,120,0.9) 0%,
+rgba(255,200,80,0.6) 25%,
+rgba(255,150,50,0.3) 45%,
+transparent 70%);
+filter:blur(120px);
+z-index:-1;
+}
+
+@keyframes flicker{
+from{transform:scale(1);}
+to{transform:scale(1.08);}
+}
+
+.text{
+font-size:40px;
+margin-top:20px;
+display:none;
+}
+
+/* البالونات */
+
+.balloon{
+position:absolute;
+font-size:40px;
+animation:float 6s linear infinite;
+}
+
+@keyframes float{
+from{transform:translateY(100vh);}
+to{transform:translateY(-100vh);}
+}
+
+/* الكونفيتي */
+
+.confetti{
+position:absolute;
+font-size:25px;
+animation:fall 5s linear infinite;
+}
+
+@keyframes fall{
+from{transform:translateY(-100px);}
+to{transform:translateY(100vh);}
+}
+
+/* الصفحة الثانية */
+
+#page2{
+display:none;
+height:100vh;
+background:linear-gradient(45deg,#dd3639,#ff696e);
+flex-direction:column;
+justify-content:center;
+align-items:center;
+}
+
+.photo{
+width:320px;
+height:420px;
+border-radius:25px;
+overflow:hidden;
+cursor:pointer;
+box-shadow:0 15px 40px rgba(0,0,0,0.3);
+transition:0.4s;
+}
+
+.photo img{
+width:100%;
+height:100%;
+object-fit:cover;
+}
+
+.photo:hover{
+transform:scale(1.05);
+}
+
+.message{
+margin-top:30px;
+font-size:32px;
+opacity:0;
+transform:translateY(20px);
+transition:0.6s;
+line-height:1.6;
+}
+
+.show{
+opacity:1;
+transform:translateY(0);
+}
+
+</style>
+
+</head>
+
+<body>
+
+<audio id="music">
+
+<source src="music.mp3" type="audio/mpeg">
+
+</audio>
+
+<!-- الصفحة الأولى -->
+
+<div id="page1">
+
+<div id="countdown">10</div>
+
+<div class="candle" id="candle">🕯️</div>
+
+<div class="text" id="text">
+
+الكتكوته اللي كبرت سنة 🐣🎉💥 
+
+</div>
+
+</div>
+
+<!-- الصفحة الثانية -->
+
+<div id="page2">
+
+<h1>اضغطي على رنون ❤️</h1>
+
+<div class="photo" onclick="showMessage()">
+
+<img src="child.jpg">
+
+</div>
+
+<div id="message" class="message"></div>
+
+</div>
+
+<script>
+
+var time=10;
+
+var countdown=setInterval(function(){
+
+time--;
+
+document.getElementById("countdown").innerHTML=time;
+
+if(time==0){
+
+clearInterval(countdown);
+
+document.getElementById("countdown").style.display="none";
+
+document.getElementById("candle").style.display="block";
+
+document.getElementById("text").style.display="block";
+
+/* البالونات */
+
+for(let i=0;i<25;i++){
+
+let balloon=document.createElement("div");
+
+balloon.className="balloon";
+
+balloon.innerHTML="🎈";
+
+balloon.style.left=Math.random()*100+"vw";
+
+balloon.style.animationDuration=(Math.random()*3+3)+"s";
+
+document.body.appendChild(balloon);
+
+}
+
+/* الكونفيتي */
+
+for(let i=0;i<40;i++){
+
+let conf=document.createElement("div");
+
+conf.className="confetti";
+
+conf.innerHTML="🎉";
+
+conf.style.left=Math.random()*100+"vw";
+
+conf.style.animationDuration=(Math.random()*3+2)+"s";
+
+document.body.appendChild(conf);
+
+}
+
+/* الانتقال للصفحة الثانية */
+
+setTimeout(function(){
+
+document.getElementById("page1").style.display="none";
+
+document.getElementById("page2").style.display="flex";
+
+},8000);
+
+}
+
+},1000);
+
+function showMessage(){
+
+document.getElementById("music").play().catch(()=>{});
+
+let text = "كل سنه وانتي طيبه يا اجمل واحن حد في حياتي ❤️\nكل سنه وانتي اعظم ما رأت عيني 🥰\nبحبك اووي ❤️\nHappy birthday ranon 🐣🥰🥰🥰🫶🏻😘🎊🎉";
+
+let i = 0;
+
+let speed = 60;
+
+let messageBox = document.getElementById("message");
+
+messageBox.classList.add("show");
+
+function typeWriter(){
+
+if(i < text.length){
+
+if(text.charAt(i) == "\n"){
+
+messageBox.innerHTML += "<br>";
+
+}else{
+
+messageBox.innerHTML += text.charAt(i);
+
+}
+
+i++;
+
+setTimeout(typeWriter, speed);
+
+}
+
+}
+
+typeWriter();
+
+}
+
+</script>
+
+</body>
+
+</html>
